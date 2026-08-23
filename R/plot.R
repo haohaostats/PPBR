@@ -57,24 +57,35 @@ plot.ppbr_fit <- function(x, type = c("target", "states", "brackets", "safety", 
 plot.ppbr_simulation <- function(x, type = c("selection", "allocation"), ...) {
   type <- match.arg(type)
   scenarios <- unique(x$selection$scenario)
+  old <- par(no.readonly = TRUE)
+  on.exit(par(old), add = TRUE)
+  par(mar = c(4.5, 4.7, 3.5, 7.5), xpd = NA)
   if (type == "selection") {
     mat <- sapply(scenarios, function(s)
       x$selection$probability[x$selection$scenario == s])
     rownames(mat) <- c("No dose", as.character(x$design$dose))
+    cols <- c("#9AA3AA", grDevices::hcl.colors(x$design$J, "Dark 3"))
     barplot(mat, beside = TRUE, names.arg = scenarios,
-            col = grDevices::hcl.colors(nrow(mat), "Teal"),
+            col = cols, border = "#24444F",
             ylab = "Selection probability", main = "Terminal selection", ...)
-    legend("topright", rownames(mat), fill = grDevices::hcl.colors(nrow(mat), "Teal"),
-           bty = "n", cex = 0.8)
+    usr <- par("usr")
+    legend(x = usr[2L] + 0.025 * diff(usr[1:2]), y = usr[4L],
+           xjust = 0, yjust = 1, legend = rownames(mat),
+           fill = cols, border = "#24444F", title = "Dose",
+           bty = "n", cex = 0.9, x.intersp = 0.8, y.intersp = 1.1)
   } else {
     mat <- sapply(scenarios, function(s)
       x$allocation$mean_proportion[x$allocation$scenario == s])
     rownames(mat) <- as.character(x$design$dose)
+    cols <- grDevices::hcl.colors(nrow(mat), "Dark 3")
     barplot(mat, beside = TRUE, names.arg = scenarios,
-            col = grDevices::hcl.colors(nrow(mat), "Teal"),
+            col = cols, border = "#24444F",
             ylab = "Mean allocation proportion", main = "Patient allocation", ...)
-    legend("topright", rownames(mat), fill = grDevices::hcl.colors(nrow(mat), "Teal"),
-           title = "Dose", bty = "n", cex = 0.8)
+    usr <- par("usr")
+    legend(x = usr[2L] + 0.025 * diff(usr[1:2]), y = usr[4L],
+           xjust = 0, yjust = 1, legend = rownames(mat),
+           fill = cols, border = "#24444F", title = "Dose", bty = "n",
+           cex = 0.9, x.intersp = 0.8, y.intersp = 1.1)
   }
   invisible(x)
 }
