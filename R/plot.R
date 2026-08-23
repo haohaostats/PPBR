@@ -13,9 +13,12 @@ plot.ppbr_fit <- function(x, type = c("target", "states", "brackets", "safety", 
     if (which == "target") {
       labs <- c("No dose", as.character(x$design$dose))
       cols <- ifelse(x$targets$eligible, accent, "white")
-      bp <- barplot(x$targets$probability, names.arg = labs, col = cols,
+      bp <- barplot(x$targets$probability,
+                    names.arg = rep("", length(labs)), col = cols,
                     border = accent, ylab = "Posterior probability",
                     xlab = "Dose", main = "Discrete target posterior", ...)
+      axis(1, at = bp, labels = c("None", x$design$dose),
+           tick = FALSE, gap.axis = -1)
       invisible(bp)
     } else if (which == "states") {
       cols <- ifelse(x$states$family == "Exact target", accent, muted)
