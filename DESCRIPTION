@@ -1,0 +1,18 @@
+Package: ppbr
+Type: Package
+Title: Posterior Predictive Bracketing and Resolution Dose Finding
+Version: 1.0.0
+Authors@R: person("PPBR", "Development Team", email = "haocstats@gmail.com", role = c("aut", "cre"))
+Description: Implements posterior predictive bracketing and resolution for
+    phase I dose-finding trials with ordered doses and binary toxicity outcomes.
+    The package supports trial specification, interim and terminal decisions,
+    posterior summaries, visualization, and operating-characteristic simulation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+Depends: R (>= 4.1.0)
+Imports: graphics, grDevices, stats
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/haohaostats/PPBR
+BugReports: https://github.com/haohaostats/PPBR/issues
