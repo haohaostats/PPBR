@@ -71,15 +71,16 @@ plot.ppbr_simulation <- function(x, type = c("selection", "allocation"), ...) {
     rownames(mat) <- c("No dose", as.character(x$design$dose))
     keep <- rowSums(mat) > 0
     mat <- mat[keep, , drop = FALSE]
-    labs <- ifelse(rownames(mat) == "No dose", "No dose",
-                   paste("Dose", rownames(mat)))
+    labs <- ifelse(rownames(mat) == "No dose", "None", rownames(mat))
     ymax <- max(mat) * 1.18
     for (i in seq_along(scenarios)) {
       values <- mat[, i]
-      bp <- barplot(values, names.arg = labs, col = accent,
-                    border = border, ylim = c(0, ymax), xlab = "Final selection",
+      bp <- barplot(values, names.arg = rep("", length(labs)), col = accent,
+                    border = border, ylim = c(0, ymax),
+                    xlab = "Final selected dose",
                     ylab = if ((i - 1L) %% nc == 0L) "Selection probability" else "",
                     ...)
+      axis(1, at = bp, labels = labs, tick = FALSE, gap.axis = -1)
       text(bp, values, labels = sprintf("%.2f", values), pos = 3,
            cex = 0.8, col = border, xpd = NA)
       mtext(scenarios[i], side = 3, adj = 0, line = 0.5,
@@ -91,14 +92,15 @@ plot.ppbr_simulation <- function(x, type = c("selection", "allocation"), ...) {
     mat <- sapply(scenarios, function(s)
       x$allocation$mean_proportion[x$allocation$scenario == s])
     rownames(mat) <- as.character(x$design$dose)
-    labs <- paste("Dose", rownames(mat))
+    labs <- rownames(mat)
     ymax <- max(mat) * 1.18
     for (i in seq_along(scenarios)) {
       values <- mat[, i]
-      bp <- barplot(values, names.arg = labs, col = accent,
+      bp <- barplot(values, names.arg = rep("", length(labs)), col = accent,
                     border = border, ylim = c(0, ymax), xlab = "Assigned dose",
                     ylab = if ((i - 1L) %% nc == 0L) "Mean allocation proportion" else "",
                     ...)
+      axis(1, at = bp, labels = labs, tick = FALSE, gap.axis = -1)
       text(bp, values, labels = sprintf("%.2f", values), pos = 3,
            cex = 0.8, col = border, xpd = NA)
       mtext(scenarios[i], side = 3, adj = 0, line = 0.5,
