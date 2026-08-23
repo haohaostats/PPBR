@@ -65,13 +65,16 @@ plot.ppbr_simulation <- function(x, type = c("selection", "allocation"), ...) {
       x$selection$probability[x$selection$scenario == s])
     rownames(mat) <- c("No dose", as.character(x$design$dose))
     cols <- c("#9AA3AA", grDevices::hcl.colors(x$design$J, "Dark 3"))
+    keep <- rowSums(mat) > 0
+    mat <- mat[keep, , drop = FALSE]
+    cols <- cols[keep]
     barplot(mat, beside = TRUE, names.arg = scenarios,
             col = cols, border = "#24444F",
             ylab = "Selection probability", main = "Terminal selection", ...)
     usr <- par("usr")
     legend(x = usr[2L] + 0.025 * diff(usr[1:2]), y = usr[4L],
            xjust = 0, yjust = 1, legend = rownames(mat),
-           fill = cols, border = "#24444F", title = "Dose",
+           fill = cols, border = "#24444F", title = "Final selection",
            bty = "n", cex = 0.9, x.intersp = 0.8, y.intersp = 1.1)
   } else {
     mat <- sapply(scenarios, function(s)
