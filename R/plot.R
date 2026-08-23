@@ -59,36 +59,53 @@ plot.ppbr_simulation <- function(x, type = c("selection", "allocation"), ...) {
   scenarios <- unique(x$selection$scenario)
   old <- par(no.readonly = TRUE)
   on.exit(par(old), add = TRUE)
-  par(mar = c(4.5, 4.7, 3.5, 7.5), xpd = NA)
+  nc <- min(3L, length(scenarios))
+  nr <- ceiling(length(scenarios) / nc)
+  par(mfrow = c(nr, nc), mar = c(4.2, 4.3, 2.8, 1),
+      oma = c(0, 0, 2.2, 0))
+  accent <- "#168A93"
+  border <- "#24444F"
   if (type == "selection") {
     mat <- sapply(scenarios, function(s)
       x$selection$probability[x$selection$scenario == s])
     rownames(mat) <- c("No dose", as.character(x$design$dose))
-    cols <- c("#9AA3AA", grDevices::hcl.colors(x$design$J, "Dark 3"))
     keep <- rowSums(mat) > 0
     mat <- mat[keep, , drop = FALSE]
-    cols <- cols[keep]
-    barplot(mat, beside = TRUE, names.arg = scenarios,
-            col = cols, border = "#24444F",
-            ylab = "Selection probability", main = "Terminal selection", ...)
-    usr <- par("usr")
-    legend(x = usr[2L] + 0.025 * diff(usr[1:2]), y = usr[4L],
-           xjust = 0, yjust = 1, legend = rownames(mat),
-           fill = cols, border = "#24444F", title = "Final selection",
-           bty = "n", cex = 0.9, x.intersp = 0.8, y.intersp = 1.1)
+    labs <- ifelse(rownames(mat) == "No dose", "No dose",
+                   paste("Dose", rownames(mat)))
+    ymax <- max(mat) * 1.18
+    for (i in seq_along(scenarios)) {
+      values <- mat[, i]
+      bp <- barplot(values, names.arg = labs, col = accent,
+                    border = border, ylim = c(0, ymax), xlab = "Final selection",
+                    ylab = if ((i - 1L) %% nc == 0L) "Selection probability" else "",
+                    ...)
+      text(bp, values, labels = sprintf("%.2f", values), pos = 3,
+           cex = 0.8, col = border, xpd = NA)
+      mtext(scenarios[i], side = 3, adj = 0, line = 0.5,
+            font = 2, cex = 0.95)
+    }
+    mtext("Terminal selection", side = 3, outer = TRUE,
+          font = 2, cex = 1.15, line = 0.5)
   } else {
     mat <- sapply(scenarios, function(s)
       x$allocation$mean_proportion[x$allocation$scenario == s])
     rownames(mat) <- as.character(x$design$dose)
-    cols <- grDevices::hcl.colors(nrow(mat), "Dark 3")
-    barplot(mat, beside = TRUE, names.arg = scenarios,
-            col = cols, border = "#24444F",
-            ylab = "Mean allocation proportion", main = "Patient allocation", ...)
-    usr <- par("usr")
-    legend(x = usr[2L] + 0.025 * diff(usr[1:2]), y = usr[4L],
-           xjust = 0, yjust = 1, legend = rownames(mat),
-           fill = cols, border = "#24444F", title = "Dose", bty = "n",
-           cex = 0.9, x.intersp = 0.8, y.intersp = 1.1)
+    labs <- paste("Dose", rownames(mat))
+    ymax <- max(mat) * 1.18
+    for (i in seq_along(scenarios)) {
+      values <- mat[, i]
+      bp <- barplot(values, names.arg = labs, col = accent,
+                    border = border, ylim = c(0, ymax), xlab = "Assigned dose",
+                    ylab = if ((i - 1L) %% nc == 0L) "Mean allocation proportion" else "",
+                    ...)
+      text(bp, values, labels = sprintf("%.2f", values), pos = 3,
+           cex = 0.8, col = border, xpd = NA)
+      mtext(scenarios[i], side = 3, adj = 0, line = 0.5,
+            font = 2, cex = 0.95)
+    }
+    mtext("Patient allocation", side = 3, outer = TRUE,
+          font = 2, cex = 1.15, line = 0.5)
   }
   invisible(x)
 }
