@@ -3,6 +3,8 @@
 `ppbr` implements posterior predictive bracketing and resolution for phase I
 dose-finding trials with ordered doses and binary toxicity outcomes.
 
+[Launch the PPBR Shiny web application](https://01a02ea1-beac-e827-0c00-bcca8d89e653.share.connect.posit.cloud/)
+
 ## Installation
 
 ```r
@@ -11,9 +13,9 @@ remotes::install_github("haohaostats/PPBR")
 
 ## Shiny web application
 
-Use PPBR through the public Shiny web application. The Posit Connect Cloud link
-will be added here when the first deployment is published; no local R
-installation will be required.
+Use PPBR through the public
+[Shiny web application](https://01a02ea1-beac-e827-0c00-bcca8d89e653.share.connect.posit.cloud/).
+No local R installation is required.
 
 ## Core workflow
 
